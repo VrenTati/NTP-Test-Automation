@@ -1,3 +1,5 @@
+import openai
+import google.generativeai as genai
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
