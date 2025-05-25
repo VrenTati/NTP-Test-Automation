@@ -23,6 +23,10 @@ load_dotenv()
 # Initialize FastAPI app
 app = FastAPI(title="Currency Recognition API", version="1.0.0")
 
+# Initialize OpenAI and Gemini clients
+openai.api_key = os.getenv("OPENAI_API_KEY")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
