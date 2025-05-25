@@ -1,0 +1,203 @@
+/* Custom styles for the Currency Recognition App */
+
+.App {
+  text-align: center;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animation for loading states */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Custom hover effects for buttons */
+.btn-hover-effect {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-hover-effect:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom styles for the image preview */
+.image-preview {
+  transition: transform 0.2s ease-in-out;
+}
+
+.image-preview:hover {
+  transform: scale(1.02);
+}
+
+/* Custom styles for analysis cards */
+.analysis-card {
+  transition: all 0.2s ease-in-out;
+  border-left: 4px solid transparent;
+}
+
+.analysis-card:hover {
+  border-left-color: #3B82F6;
+  transform: translateX(2px);
+}
+
+/* Custom gradient backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Custom styles for currency confidence badges */
+.confidence-high {
+  background-color: #10B981;
+  color: white;
+}
+
+.confidence-medium {
+  background-color: #F59E0B;
+  color: white;
+}
+
+.confidence-low {
+  background-color: #EF4444;
+  color: white;
+}
+
+/* Custom focus styles */
+input:focus,
+button:focus {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+/* Custom styles for file upload area */
+.upload-area {
+  border: 2px dashed #D1D5DB;
+  border-radius: 8px;
+  padding: 2rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.upload-area:hover {
+  border-color: #3B82F6;
+  background-color: #F8FAFC;
+}
+
+.upload-area.dragover {
+  border-color: #10B981;
+  background-color: #ECFDF5;
+}
+
+/* Custom styles for the AI provider indicators */
+.ai-provider-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.openai-indicator {
+  background-color: #10B981;
+}
+
+.gemini-indicator {
+  background-color: #3B82F6;
+}
+
+/* Custom styles for analysis results */
+.analysis-result {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom styles for currency display */
+.currency-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.currency-item:hover {
+  background-color: #F3F4F6;
+  transform: scale(1.01);
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .mobile-stack {
+    flex-direction: column;
+  }
+  
+  .mobile-full-width {
+    width: 100%;
+  }
+}
+
+/* Custom loading spinner */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3B82F6;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Custom styles for error messages */
+.error-message {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Custom styles for success messages */
+.success-message {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
