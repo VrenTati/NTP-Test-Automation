@@ -121,78 +121,89 @@ def convert_image_to_base64(image_bytes):
 # AI Integration functions
 async def analyze_with_openai(image_base64: str):
     try:
-        chat = LlmChat(
-            api_key=os.getenv("OPENAI_API_KEY"),
-            session_id=f"openai-currency-{uuid.uuid4()}",
-            system_message="You are a currency recognition expert. Analyze images of banknotes and coins to identify currency type, denomination, and quantity. Focus on UAH (Ukrainian Hryvnia), USD (US Dollar), and EUR (Euro). Return structured JSON responses."
-        ).with_model("openai", "gpt-4o-mini")
-
-        image_content = ImageContent(image_base64=image_base64)
+        client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         
-        user_message = UserMessage(
-            text="""Analyze this image of currency (banknotes/coins) and return a JSON response with:
-            {
-                "currencies_detected": [
-                    {
-                        "currency_type": "UAH/USD/EUR/etc",
-                        "denomination": "value as string",
-                        "quantity": number,
-                        "confidence": "high/medium/low"
-                    }
-                ],
-                "total_value": "calculated total if same currency type",
-                "notes": "any additional observations",
-                "provider": "OpenAI GPT-4o-mini"
-            }""",
-            file_contents=[image_content]
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a currency recognition expert. Analyze images of banknotes and coins to identify currency type, denomination, and quantity. Focus on UAH (Ukrainian Hryvnia), USD (US Dollar), and EUR (Euro). Return structured JSON responses."
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": """Analyze this image of currency (banknotes/coins) and return a JSON response with:
+                            {
+                                "currencies_detected": [
+                                    {
+                                        "currency_type": "UAH/USD/EUR/etc",
+                                        "denomination": "value as string",
+                                        "quantity": number,
+                                        "confidence": "high/medium/low"
+                                    }
+                                ],
+                                "total_value": "calculated total if same currency type",
+                                "notes": "any additional observations",
+                                "provider": "OpenAI GPT-4o-mini"
+                            }"""
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/png;base64,{image_base64}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens=1000
         )
         
-        response = await chat.send_message(user_message)
+        response_text = response.choices[0].message.content
         
         # Try to parse JSON, if fails return raw response
         try:
-            return json.loads(response)
+            return json.loads(response_text)
         except:
-            return {"raw_response": response, "provider": "OpenAI GPT-4o-mini"}
+            return {"raw_response": response_text, "provider": "OpenAI GPT-4o-mini"}
             
     except Exception as e:
         return {"error": str(e), "provider": "OpenAI GPT-4o-mini"}
 
 async def analyze_with_gemini(image_base64: str):
     try:
-        chat = LlmChat(
-            api_key=os.getenv("GEMINI_API_KEY"),
-            session_id=f"gemini-currency-{uuid.uuid4()}",
-            system_message="You are a currency recognition expert. Analyze images of banknotes and coins to identify currency type, denomination, and quantity. Focus on UAH (Ukrainian Hryvnia), USD (US Dollar), and EUR (Euro). Return structured JSON responses."
-        ).with_model("gemini", "gemini-2.0-flash")
-
-        image_content = ImageContent(image_base64=image_base64)
+        # Convert base64 to PIL Image for Gemini
+        image_data = base64.b64decode(image_base64)
+        image = Image.open(io.BytesIO(image_data))
         
-        user_message = UserMessage(
-            text="""Analyze this image of currency (banknotes/coins) and return a JSON response with:
-            {
-                "currencies_detected": [
-                    {
-                        "currency_type": "UAH/USD/EUR/etc",
-                        "denomination": "value as string",
-                        "quantity": number,
-                        "confidence": "high/medium/low"
-                    }
-                ],
-                "total_value": "calculated total if same currency type",
-                "notes": "any additional observations",
-                "provider": "Google Gemini 2.0 Flash"
-            }""",
-            file_contents=[image_content]
-        )
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
         
-        response = await chat.send_message(user_message)
+        prompt = """Analyze this image of currency (banknotes/coins) and return a JSON response with:
+        {
+            "currencies_detected": [
+                {
+                    "currency_type": "UAH/USD/EUR/etc",
+                    "denomination": "value as string",
+                    "quantity": number,
+                    "confidence": "high/medium/low"
+                }
+            ],
+            "total_value": "calculated total if same currency type",
+            "notes": "any additional observations",
+            "provider": "Google Gemini 2.0 Flash"
+        }"""
+        
+        response = model.generate_content([prompt, image])
+        response_text = response.text
         
         # Try to parse JSON, if fails return raw response
         try:
-            return json.loads(response)
+            return json.loads(response_text)
         except:
-            return {"raw_response": response, "provider": "Google Gemini 2.0 Flash"}
+            return {"raw_response": response_text, "provider": "Google Gemini 2.0 Flash"}
             
     except Exception as e:
         return {"error": str(e), "provider": "Google Gemini 2.0 Flash"}
