@@ -10,6 +10,8 @@ import base64
 import uuid
 import json
 import asyncio
+import io
+from PIL import Image
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
